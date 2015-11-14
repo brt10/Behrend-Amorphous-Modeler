@@ -1,0 +1,34 @@
+This file explains the information contained in the input file.  The input file should resemble the lines below:
+
+TestSiModel                                                                               -Line 1
+0 0 1                                                                                     -Line 2
+1 2                                                                                       -Line 3
+10 90                                                                                     -Line 4
+88 12                                                                                     -Line 5
+0.1                                                                                       -Line 6
+40000                                                                                     -Line 7
+15.0 15.0 15.0                                                                            -Line 8
+1 1000 0 12 32                                                                            -Line 9
+ID type x1 y1 z1  nbonds  IDa Xa Ya Za  IDb Xb Yb Zb  IDc Xc Yc Zc  IDd Xd Yd Zd          -Line 10 to end.
+
+
+Line 1 will become the file name of several files (all with different extensions) generated when the code runs.  In this example, the energy data will be written to TestSiModel.e, and the annealed model will be called TestSiModel.anneal.  Any error messages are written to TestSiModel.error.
+
+Line 2 contains, from left to right, a flag for printing bond data (with extension .b), a flag for printing a .vasp file (which can be opened in VESTA as a visual model), and a flag for printing a table of nearest neighbor atoms (with extension .nn).  Set the flag to 1 to create the file for the current model and 0 to not create the file.  If these numbers are anything other than 0 or 1, an error message will be printed and the program will stop.
+
+Line 3 contains the type numbers for each atom type used (see Tuttle_constants.txt).
+
+Line 4 contains the percentage of bond swaps that will be performed on each type of atom.  If these numbers do not add up to 100, an error message will be printed and the program will stop.
+
+Line 5 contains the number of atoms for each element used (specified in line 3).  In the example above, this model contains 88 atoms of type 1 and 12 atoms of type 2.  If this line does not correspond to line 3, the program will output an error message to the .error file and stop.
+
+Line 6 will be the kT value (in eV/Angstrom). If kT is less than 0 or greater than 20, an error message will be printed and the program will stop. If kT is zero, only the swaps that decrease the total energy will be accepted.
+
+Line 7 is the number of bond switches you want to perform. If this number is a non-zero integer, the model will anneal.  If this number is not an integer, an error message will be printed and the program will stop. If this number is zero, a structural relaxation with no swaps will be performed.
+
+Line 8 is the length, width, and height of the periodic box.  By default, these are set to 0, which means that the program will automatically determine the size of the box based on the number of atoms.  If you want to use box dimensions other than the default ones, replace the zeroes with those dimensions.
+
+Line 9 contains, from left to right, the flag for volume relaxations, the number of accepted switches to wait before every volume relaxation, the first n atoms to fix the position (not moving), the first n atoms to totally exclude from swapping, the first n atoms to exclude from swapping each other (swap with other atoms is allowed).
+Set the first flag to 1 to relax the volume of the current model and 0 to not relax the volume.  If this number is anything other than 0 or 1, an error message will be printed and the program will stop.  If the number of bond switches is not an integer or if this number is greater than the number of bond switches to be performed, an error message will be printed and the program will stop.
+
+Line 10 to the end contains the input model, with one atom per line: ID=1..N is the atom index, it MUST be sorted from 1 to N; type follows line 3; nbonds is the number of bonds; for every bond, the ID and coordinates of the bonded atoms will follow.
