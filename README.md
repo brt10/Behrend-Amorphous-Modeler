@@ -8,7 +8,7 @@ Check this for the basics in markdown https://help.github.com/articles/github-fl
 
 BAM takes input in the form of a file. The simplest input would be along the lines of:
 ```text
-inputfiles
+outputfiles
 1 1 1           //[bond data] [vasp file] [nn table -need to remove]
 3               //# of atoms [type #1] [type #2] [etc. -check?] -located in tuttle_constants
 100             //[% of bond switching -atom type 1] [% type 2]
