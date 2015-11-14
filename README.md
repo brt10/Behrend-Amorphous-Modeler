@@ -1,12 +1,17 @@
-# bam
-##Behrend Amorphous Modelling
+#Behrend Amorphous Modelling
+#### bam
 
 ####You can edit the README with Markdown 
 Check this for the basics in markdown https://help.github.com/articles/github-flavored-markdown/
 
-# Todo:
-
-#Input File Format
+###Todo:
+    Move Todo list to seperate TODO file?
+    To improve compatability/usability:
+      -change file extensions to more standard formats (.txt or .csv possibly)
+      -seperate files an end user would modify and input and output files from the actual src files
+      -configure makefile to place bam.exe outside of src folder
+      
+###Input File Format
 
 BAM takes input in the form of a file. The simplest input would be along the lines of:
 ```text
@@ -24,6 +29,8 @@ outputfilesprefix
 ```
 
 This would be most likely inside a file such as **testinput.input**.
+Note: This is described in https://github.com/awadYehya/bam/blob/master/src/My_input_manual.txt
+Do We Need this?
 
-#Output
+###Output
 
