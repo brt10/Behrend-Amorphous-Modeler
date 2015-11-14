@@ -1,7 +1,7 @@
 # bam
 Behrend Amorphous Modelling
 
-####You can edit the README here with Markdown 
+####You can edit the README with Markdown 
 Check this for the basics in markdown https://help.github.com/articles/github-flavored-markdown/
 
 ##Input
