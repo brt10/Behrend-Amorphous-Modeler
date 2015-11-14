@@ -4,11 +4,14 @@ Behrend Amorphous Modelling
 ####You can edit the README with Markdown 
 Check this for the basics in markdown https://help.github.com/articles/github-flavored-markdown/
 
+# Todo:
+
+
 #Input File Format
 
 BAM takes input in the form of a file. The simplest input would be along the lines of:
 ```text
-outputfiles
+outputfilesprefix
 1 1 1           //[bond data] [vasp file] [nn table -need to remove]
 3               //# of atoms [type #1] [type #2] [etc. -check?] -located in tuttle_constants
 100             //[% of bond switching -atom type 1] [% type 2]
@@ -21,4 +24,5 @@ outputfiles
                 //otherwise # type x y z #nn #n1  --change so the code references the index numbers of the neighbors
 ```
 
+#Output
 
