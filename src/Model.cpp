@@ -10,7 +10,7 @@ Contains functions for amorphizing the atoms
 #include "Model.h"
 //#include "Path.h"
 #include <omp.h>
-#include <pthread.h>
+//#include <pthread.h>
 //#include "Python.h"
 #include <algorithm>
 #include <fstream>
