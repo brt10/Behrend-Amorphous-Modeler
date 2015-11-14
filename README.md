@@ -5,11 +5,12 @@
 Check this for the basics in markdown https://help.github.com/articles/github-flavored-markdown/
 
 ###Todo:
-    Move Todo list to seperate TODO file?
-    To improve compatability/usability:
-      -change file extensions to more standard formats (.txt or .csv possibly)
-      -seperate files an end user would modify and input and output files from the actual src files
-      -configure makefile to place bam.exe outside of src folder
+Move Todo list to seperate TODO file?
+To improve compatability/usability:
+   -change file extensions to more standard formats (.txt or .csv possibly)
+   -seperate files an end user would modify and input and output files from the actual src files
+    Note that test1.*, test*.input, and Tuttle_constants.txt are only used after compiling, and could be moved, along with bam.exe, to another directory and run. The other files are actually source files, except for My_input_manual.txt.
+   -configure makefile to place bam.exe outside of src folder
       
 ###Input File Format
 
