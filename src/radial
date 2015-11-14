@@ -1,0 +1,26 @@
+                for(j = 0; j < atoms[i].bonds.size(); j++)
+                {
+                        jSubs = atoms[i].bonds[j].id;
+                        pj = closestPointWithPBC(atoms[i].coordinates, atoms[jSubs].coordinates);
+                        // set radial forces of two partner atoms at a time
+                        // twice as efficient, since it takes the "equal and opposite" rule into account
+                        if(RADIAL_ON  &&  i < jSubs)
+                        {
+                                multiplier = (K_B[atoms[i].type][atoms[jSubs].type] * (atoms[i].bonds[j].dist-B_0[atoms[i].type][atoms[jSubs].type]) / atoms[i].bonds[j].dist);
+
+                                tempNum = multiplier * (pj.x - atoms[i].coordinates.x);
+                                atoms[i].force.x += tempNum;
+                                #pragma omp atomic
+                                atoms[jSubs].force.x -= tempNum;
+
+                                tempNum = multiplier * (pj.y - atoms[i].coordinates.y);
+                                atoms[i].force.y += tempNum;
+                                #pragma omp atomic
+                                atoms[jSubs].force.y -= tempNum;
+
+                                tempNum = multiplier * (pj.z - atoms[i].coordinates.z); //was (atoms[i].bonds[j].coordinates.z - atoms[i].coordinates.z)
+                                atoms[i].force.z += tempNum;
+                                #pragma omp atomic
+                                atoms[jSubs].force.z -= tempNum;
+                        } // end radial force
+

@@ -1,0 +1,139 @@
+/* Sets the forces on the atoms
+*/
+void Model::setForces()
+{
+        static size_t n = atoms.size(),i, j, k, jSubs, kSubs;
+        static double multiplier, tempNum, cosijk, tempJ, tempK, dist;
+        static Point pj,pk;
+
+        // reset all forces
+        for(i = 0; i < n; i++)
+        {
+//              if((SHELL_ONLY && atoms[i].shellNumber > CLUSTER_MAX_SHELL))
+//                      continue;
+
+                atoms[i].force.x = 0;
+                atoms[i].force.y = 0;
+                atoms[i].force.z = 0;
+        }
+
+        #pragma omp parallel for default(shared) private(i,j,k,jSubs,kSubs,multiplier, tempNum, cosijk, tempJ, tempK, dist, pj, pk) schedule(static)
+        for(i = 0; i < n; i++)
+        {
+//              if((SHELL_ONLY && atoms[i].shellNumber > CLUSTER_MAX_SHELL))
+//                      continue;
+
+                for(j = 0; j < atoms[i].bonds.size(); j++)
+                {
+                        jSubs = atoms[i].bonds[j].id;
+                        pj = closestPointWithPBC(atoms[i].coordinates, atoms[jSubs].coordinates);
+                        // set radial forces of two partner atoms at a time
+                        // twice as efficient, since it takes the "equal and opposite" rule into account
+                        if(RADIAL_ON  &&  i < jSubs)
+                        {
+                                multiplier = (K_B[atoms[i].type][atoms[jSubs].type] * (atoms[i].bonds[j].dist-B_0[atoms[i].type][atoms[jSubs].type]) / atoms[i].bonds[j].dist);
+
+                                tempNum = multiplier * (pj.x - atoms[i].coordinates.x);
+                                atoms[i].force.x += tempNum;
+                                #pragma omp atomic
+                                atoms[jSubs].force.x -= tempNum;
+
+                                tempNum = multiplier * (pj.y - atoms[i].coordinates.y);
+                                atoms[i].force.y += tempNum;
+                                #pragma omp atomic
+                                atoms[jSubs].force.y -= tempNum;
+
+                                tempNum = multiplier * (pj.z - atoms[i].coordinates.z); //was (atoms[i].bonds[j].coordinates.z - atoms[i].coordinates.z)
+                                atoms[i].force.z += tempNum;
+                                #pragma omp atomic
+                                atoms[jSubs].force.z -= tempNum;
+                        } // end radial force
+
+                        // set angular force of three atoms at a time
+                        // i is the "middle" atom and j/k are endpoints of the angle
+                        for(k = j+1; k < atoms[i].bonds.size() && ANGULAR_ON; k++)
+                        {
+                                kSubs = atoms[i].bonds[k].id;
+                                pk = closestPointWithPBC(atoms[i].coordinates, atoms[kSubs].coordinates);
+                                // avoids recomputing these repeatedly
+                                cosijk = ((pj.x - atoms[i].coordinates.x) * (pk.x - atoms[i].coordinates.x) +
+                                        (pj.y - atoms[i].coordinates.y) * (pk.y - atoms[i].coordinates.y) +
+                                        (pj.z - atoms[i].coordinates.z) * (pk.z - atoms[i].coordinates.z)) /
+                                        (atoms[i].bonds[j].dist * atoms[i].bonds[k].dist);
+                                multiplier = K_OMEGA[atoms[i].type][atoms[jSubs].type][atoms[kSubs].type] *
+                                        (COS_ANGLE[atoms[i].type]-cosijk);
+
+                                // find force on j
+                                tempJ = multiplier * ((pk.x-atoms[i].coordinates.x) / atoms[i].bonds[k].dist +
+                                        (atoms[i].coordinates.x-pj.x) * cosijk / atoms[i].bonds[j].dist) / atoms[i].bonds[j].dist;
+                                #pragma omp atomic
+                                atoms[jSubs].force.x += tempJ;
+                                atoms[i].force.x -= tempJ;
+
+                                tempJ = multiplier * ((pk.y-atoms[i].coordinates.y) / atoms[i].bonds[k].dist +
+                                        (atoms[i].coordinates.y-pj.y) * cosijk / atoms[i].bonds[j].dist) / atoms[i].bonds[j].dist;
+                                #pragma omp atomic
+                                atoms[jSubs].force.y += tempJ;
+                                atoms[i].force.y -= tempJ;
+
+                                tempJ = multiplier * ((pk.z-atoms[i].coordinates.z) / atoms[i].bonds[k].dist +
+                                        (atoms[i].coordinates.z-pj.z) * cosijk / atoms[i].bonds[j].dist) / atoms[i].bonds[j].dist;
+                                #pragma omp atomic
+                                atoms[jSubs].force.z += tempJ;
+                                atoms[i].force.z -= tempJ;
+
+                                // find force on k
+                                tempK = multiplier * ((pj.x-atoms[i].coordinates.x) / atoms[i].bonds[j].dist +
+                                        (atoms[i].coordinates.x-pk.x) * cosijk / atoms[i].bonds[k].dist) / atoms[i].bonds[k].dist;
+                                #pragma omp atomic
+                                atoms[kSubs].force.x += tempK;
+                                atoms[i].force.x -= tempK;
+
+                                tempK = multiplier * ((pj.y-atoms[i].coordinates.y) / atoms[i].bonds[j].dist +
+                                        (atoms[i].coordinates.y-pk.y) * cosijk / atoms[i].bonds[k].dist) / atoms[i].bonds[k].dist;
+                                #pragma omp atomic
+                                atoms[kSubs].force.y += tempK;
+                                atoms[i].force.y -= tempK;
+
+                                tempK = multiplier * ((pj.z-atoms[i].coordinates.z) / atoms[i].bonds[j].dist +
+                                        (atoms[i].coordinates.z-pk.z) * cosijk / atoms[i].bonds[k].dist) / atoms[i].bonds[k].dist;
+                                #pragma omp atomic
+                                atoms[kSubs].force.z += tempK;
+                                atoms[i].force.z -= tempK;
+                        } // end angular force
+                } // end j loop
+
+                if(REPEL_ON)
+                {
+                        // repulsive force term
+                        for(j = 0; j < atoms[i].closestNeighbors.size(); j++)
+                        {
+//                              jSubs = atoms[atoms[i].closestNeighbors[j]].id;
+                                // find closest version of atom
+                                pj = closestPointWithPBC(atoms[i].coordinates, atoms[atoms[i].closestNeighbors[j]].coordinates);
+                                dist = pj.distanceTo(atoms[i].coordinates);
+
+                                // if the distance is greater than D_0, there is no force
+                                if(dist < D_0[atoms[i].type][atoms[atoms[i].closestNeighbors[j]].type])
+                                {
+                                        multiplier = 3 * GAMMA[atoms[i].type][atoms[atoms[i].closestNeighbors[j]].type] * pow(D_0[atoms[i].type][atoms[atoms[i].closestNeighbors[j]].type] - dist, 2) / dist;
+                                        tempJ=multiplier * (atoms[i].coordinates.x - pj.x);
+                                        atoms[i].force.x += tempJ;
+                                        #pragma omp atomic
+                                        atoms[jSubs].force.x -= tempJ;  //TEST MYMOD: no force was applied to jsubs
+
+                                        tempJ = multiplier * (atoms[i].coordinates.y - pj.y);
+                                        atoms[i].force.y += tempJ;
+                                        #pragma omp atomic
+                                        atoms[jSubs].force.y -= tempJ;
+
+                                        tempJ = multiplier * (atoms[i].coordinates.z - pj.z);
+                                        atoms[i].force.z += tempJ;
+                                        #pragma omp atomic
+                                        atoms[jSubs].force.z -= tempJ;
+                                }
+                        }
+                } // end if repel on
+        } // end main loop
+}
+
