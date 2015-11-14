@@ -6,6 +6,7 @@
 #include <string>
 using namespace std;
 
+// This is main
 int main(int argc, char * argv[])
 {
 #ifdef OMP
