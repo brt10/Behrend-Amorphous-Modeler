@@ -1,11 +1,10 @@
 # bam
-Behrend Amorphous Modelling
+##Behrend Amorphous Modelling
 
 ####You can edit the README with Markdown 
 Check this for the basics in markdown https://help.github.com/articles/github-flavored-markdown/
 
 # Todo:
-
 
 #Input File Format
 
