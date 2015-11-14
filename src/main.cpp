@@ -29,7 +29,10 @@ int main(int argc, char * argv[])
 		string str(argv[1]);
 		m.C_FILE_NAME = str;
    }
-   else { cerr << "No input file specified.  Program aborted." << endl; return 1; }
+   else { 
+	   cout << "No input file specified.  Specify file." << endl;
+	   cin >> m.C_FILE_NAME;
+   }
 
    m.readConstants("Tuttle_constants.txt");
    if(m.readInput()){
