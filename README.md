@@ -24,5 +24,7 @@ outputfilesprefix
                 //otherwise # type x y z #nn #n1  --change so the code references the index numbers of the neighbors
 ```
 
+This would be most likely inside a file such as **testinput.input**.
+
 #Output
 
