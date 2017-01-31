@@ -174,7 +174,7 @@ void Model::performAnnealing(const int numSwaps, const int numVSwaps, string fil
 		backup = atoms;
 		initEnergy = getEnergy();
 
-//		randomSwap();
+		randomSwap();
 		numSteps = relax();
 
 		finEnergy = getEnergy();
@@ -689,9 +689,9 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 	static unsigned int maxPercent;
 	static size_t i,j,*numtype,**typelist;
 	static bool once=true;
-
+    
 	//enumerates the atoms for every type. This is executed only at the first call.
-	if(once){
+		if(once){
 		typelist = new size_t*[N_TYPES]; for(i = 0; i < N_TYPES; i++) typelist[i] = new size_t[n]; // typelist[NTYPES][n]
 		numtype = new size_t[N_TYPES]; // numtype[NTYPES]
 
@@ -707,7 +707,7 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 		}
 		once=false;
 	}
-
+       
 	//cout << "\nSelecting bonds to swap... " ; fflush(stdout);
 
 	while(true)
@@ -722,7 +722,7 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 				maxPercent = maxPercent + atomPercent[i];
 				if(randNum <= maxPercent)
 				{ // type selected; selecting one atom of type i and exit loop
-					randIndex = ( rand() % numtype[i] );
+				        randIndex = ( rand() % numtype[i] );
 					aSubs = typelist[i][randIndex];
 					break;
 				}
@@ -730,9 +730,12 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 		}
 		else
 		{
-			aSubs = (rand() % numtype[0]);
+		        cout << "gets to else"; fflush(stdout);
+		        aSubs = (rand() % numtype[0]); // floating point exception
+			cout << "error here?"; fflush(stdout);
 		}
 
+		cout << "\n\ngets here"; fflush(stdout);
 		// choose B
 		initR = rand() % atoms[aSubs].bonds.size();
 		bSubs = atoms[aSubs].bonds[initR].id;
