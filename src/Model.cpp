@@ -169,12 +169,12 @@ void Model::performAnnealing(const int numSwaps, const int numVSwaps, string fil
 	{
 		if( i%progress_step == 0) cout << "\r" << progress[(i/progress_step)%4]
 						<< " Progress: " << (i*100)/numSwaps << " %  "
-						<< "   accepted swaps: " << acceptedSwaps ; fflush(stdout);
+						<< "   accepted swaps: " << acceptedSwaps; fflush(stdout);
 
 		backup = atoms;
 		initEnergy = getEnergy();
 
-		randomSwap();
+//		randomSwap();
 		numSteps = relax();
 
 		finEnergy = getEnergy();
