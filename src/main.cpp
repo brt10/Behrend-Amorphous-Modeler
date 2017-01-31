@@ -46,8 +46,6 @@ int main(int argc, char * argv[])
 //
 // 		}
 
-		cout << "checkpoint 1";
-
 		if(m.I_NUM_SWITCHES >= 0){
 			string energyFileName = m.FILE_NAME + ".e";
 			string annealedFileName = m.FILE_NAME + ".anneal";
