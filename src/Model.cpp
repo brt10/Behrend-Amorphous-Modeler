@@ -42,7 +42,7 @@ Model::Model()
 {
 	// seeds the random number generator
 	srand((unsigned int)time(0));
-	atoms.clear();
+	atoms.clear();    //vector of Atoms from Atom.h
 	IGNORE_ATOMS = 0; //completely ignore the first n atoms from swaps
 	IGNORE_SWAP = 0;  //freeze the bonds between the first n atoms (bonds with other atoms can swap)
 	FIX_ATOMS = 0;    //fix the first n atoms' position
@@ -697,7 +697,8 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 
 		//fills the array
 		for(i = 0; i < N_TYPES; i++){
-			numtype[i]=0;
+			//numtype[i]=0;
+			numtype[i]=1;
 			for(j = IGNORE_ATOMS; j < n; j++){
 				if(atoms[j].type == nTypes[i]){
 					typelist[i][numtype[i]]=atoms[j].id;
@@ -730,20 +731,25 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 		}
 		else
 		{
-		        cout << "gets to else"; fflush(stdout);
+		        cout << "numtype[0] is " << numtype[0]; fflush(stdout);
 		        aSubs = (rand() % numtype[0]); // floating point exception
 			cout << "error here?"; fflush(stdout);
 		}
 
 		cout << "\n\ngets here"; fflush(stdout);
-		// choose B
+		cout << "size of atoms is " << atoms.size() << endl;
+		/* / choose B
 		initR = rand() % atoms[aSubs].bonds.size();
 		bSubs = atoms[aSubs].bonds[initR].id;
 		if( bSubs < IGNORE_ATOMS ) continue;
-		
+		*/
+		cout << "Line 745 " << endl;
+
 		// choose C
 		initR = rand() % atoms[bSubs].bonds.size();
 		cSubs = atoms[bSubs].bonds[initR].id;
+
+		cout << "line 749" << endl;
 
 		if(cSubs == aSubs || isNearestNeighbor(cSubs, atoms[aSubs]))
 		{
@@ -771,6 +777,8 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 		initR = rand() % atoms[cSubs].bonds.size();
 		dSubs = atoms[cSubs].bonds[initR].id;
 
+		cout << "line 775" << endl;
+
 		// there is a problem with D
 		if(dSubs == bSubs || isNearestNeighbor(dSubs, atoms[bSubs]))
 		{
@@ -789,6 +797,8 @@ void Model::randomSwap()//WARNING: when IGNORE_ATOMS is not small this routine b
 				continue;
 		}
 		if( dSubs < IGNORE_ATOMS ) continue;
+
+		cout << "like 794" << endl;
 
 		// b and c can be both < IGNORE_SWAP, since the b-c bond is preserved
 		// d can be < IGNORE_SWAP only if both b,c are not
@@ -1568,10 +1578,14 @@ bool Model::readInput()
 	double x, y, z, x2, y2, z2;
 	MAX_BONDS=0;
 	//Reads a model from a file. WARNING: Expecting atom id from 1 to N in input, while stores atom id from 0 to N-1 in memory.
+	cout << "Gets to before reading file in" << endl;
 	if(!error){
+		cout << "no error" << endl;
 		while(fin >> id >> type >> x >> y >> z >> numBonds){
 
+			cout << "got past whatever that is" << endl;
 			if(numBonds > MAX_BONDS) MAX_BONDS = numBonds;
+			cout << "reading in atoms from config file" << endl;
 			atoms.push_back(Atom(Point(x, y, z), id-1));
 			atoms[atoms.size()-1].type = type;
 
