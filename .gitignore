@@ -6,8 +6,7 @@ src/serial
 src/serial.exe
 src/serial.exe.stackdump
 src/test1*
-bin/test1.input
-bin/test216.input
+bin/*
 bin/!.gitignore
 bin/!test1.input
 bin/!test216.input

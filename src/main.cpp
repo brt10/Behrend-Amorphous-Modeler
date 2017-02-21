@@ -49,7 +49,7 @@ n->Za >> n->IDb >> n->Xb >> n->Yb >> n->Zb >> n->IDc >> n->Xc >> n->Yc >> n->Zc 
 		}
 	}
 
-	istringstream(configMap["output_file_prefix"]) >> basename;
+	(istringstream(configMap["output_file_prefix"])) >> basename;
 	istringstream(configMap["energy"]) >> boolalpha >> eOutput;
 	istringstream(configMap["error"]) >> boolalpha >> errOutput;
 	istringstream(configMap["output"]) >> boolalpha >> mOutput;

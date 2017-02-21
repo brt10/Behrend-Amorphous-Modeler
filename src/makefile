@@ -1,4 +1,4 @@
-CFLAGS = -Wall -O3
+CFLAGS = -Wall -O3 -std=c++11
 LFLAGS = -Wall
 
 bam: main.o
