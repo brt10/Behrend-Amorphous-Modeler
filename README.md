@@ -1,7 +1,7 @@
 #Behrend Amorphous Modelling
 
 ###BAM:
-The Behrend Amorphous Modeller takes an input file ending in `.input` and will generate output files with the following extensions:
+The Behrend Amorphous Modeller takes an input file ending in `.input` and will generate output files with the same prefix and the following extensions:
 * `.e` - energy file
 * `.b` - bond file
 * `.nn` - nearest neighbors file
@@ -38,11 +38,3 @@ If lattice_constants given, then the format for atoms is:
 
 `atom_type atom_number  x1 y1 z1  nbonds  IDa Xa Ya Za  IDb Xb Yb Zb  IDc Xc Yc Zc  IDd Xd Yd Zd`
 
-From line 10 to end.
-
-Line 9 contains, from left to right, the flag for volume relaxations, the number of accepted switches to wait before every volume relaxation, the first n atoms to fix the position (not moving), the first n atoms to totally exclude from swapping, the first n atoms to exclude from swapping each other (swap with other atoms is allowed).
-Set the first flag to 1 to relax the volume of the current model and 0 to not relax the volume.  If this number is anything other than 0 or 1, an error message will be printed and the program will stop.  If the number of bond switches is not an integer or if this number is greater than the number of bond switches to be performed, an error message will be printed and the program will stop.
-
-
-
-The output files will have the same basename as the input file.
