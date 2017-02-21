@@ -1,0 +1,13 @@
+src/*.o
+src/bam
+src/bam.exe
+src/bam.exe.stackdump
+src/serial
+src/serial.exe
+src/serial.exe.stackdump
+src/test1*
+bin/test1.input
+bin/test216.input
+bin/!.gitignore
+bin/!test1.input
+bin/!test216.input
