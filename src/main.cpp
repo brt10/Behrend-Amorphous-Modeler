@@ -1,3 +1,4 @@
+#include "model.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -16,7 +17,7 @@ struct atom {
 int main(int argc, char* argv[]) {
 
 	if (2 != argc) {
-		cerr << "USAGE: bam file.input";
+		cerr << "USAGE: bam file.input" << endl;
 		return 1;
 	}
 
@@ -27,6 +28,7 @@ int main(int argc, char* argv[]) {
 	int atomQuantityOne, atomQuantityTwo, numberSwitches, relaxTime;
 	double bondSwitchProbOne, bondSwitchProbTwo, atomSwitchProb, temp, latticeConsts[3];
 	string basename; // name of output files
+
 	ifstream configFile(argv[1]);
 
 	string key, value, buffer;
@@ -72,7 +74,6 @@ n->Za >> n->IDb >> n->Xb >> n->Yb >> n->Zb >> n->IDc >> n->Xc >> n->Yc >> n->Zc 
 	istringstream(configMap["volume_relax_time"]) >> relaxTime;
 	istringstream(configMap["atoms_fixed"]) >> atomFixed;
 
-
 	cout << "basename is " << basename << endl;
 	cout << "eOutput is " << eOutput << endl;
 	cout << "errOutput is " << errOutput << endl;
@@ -95,8 +96,6 @@ n->Za >> n->IDb >> n->Xb >> n->Yb >> n->Zb >> n->IDc >> n->Xc >> n->Yc >> n->Zc 
 	cout << "relaxVolume is " << relaxVolume << endl;
 	cout << "relaxTime is " << relaxTime << endl;
 	cout << "atomFixed is " << atomFixed << endl;
-
-	getchar();
 
 	return 0;
 }
