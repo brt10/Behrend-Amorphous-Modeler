@@ -23,7 +23,7 @@ bool model::makeDefectedSystem() {
 		return 1;
 	}
 
-	boxSize[0] = 1000; //2.715 * pow(NEW_ATOMS, 1/3.0); // sets a dimension to 2.715 * NEW_ATOMS^(1/3) ?
+	boxSize[0] = 1000.0; //2.715 * pow(NEW_ATOMS, 1/3.0); // sets a dimension to 2.715 * NEW_ATOMS^(1/3) ?
 	boxSize[2] = boxSize[1] = boxSize[0]; // a box
 
 	int numFail = 0;

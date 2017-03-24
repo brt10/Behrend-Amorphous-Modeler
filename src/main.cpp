@@ -8,12 +8,6 @@
 
 using namespace std;
 
-struct atom {
-	string atom_type;
-	int atom_number, nbonds, IDa, IDb, IDc, IDd;
-	double x1, y1, z1, Xa, Ya, Za, Xb, Yb, Zb, Xc, Yc, Zc, Xd, Yd, Zd;
-};
-
 int main(int argc, char* argv[]) {
 
 	if (2 != argc) {
@@ -32,21 +26,29 @@ int main(int argc, char* argv[]) {
 	ifstream configFile(argv[1]);
 
 	string key, value, buffer;
-	map<string, string> configMap;
+	map<string, string> configMap; // dictionary for configuration files
 	vector<atom> configAtoms;
 	configAtoms.reserve(100);
-	while (getline(configFile, buffer)) {
-		if ('#' == buffer[0])
+	while (getline(configFile, buffer) && !buffer.empty()) {
+		if ('#' == buffer[0]) // if the first character of the buffer is a #, ignore it
 			continue;
-		else if (!buffer.find('=')) {
-			atom* n = new atom;
-			configFile >> n->atom_type >> n->atom_number >> n->x1 >> n->y1 >> n->z1 >> n->nbonds >> n->IDa >> n->Xa >> n->Ya >> \
-n->Za >> n->IDb >> n->Xb >> n->Yb >> n->Zb >> n->IDc >> n->Xc >> n->Yc >> n->Zc >> n->IDd >> n->Xd >> n->Yd >> n->Zd;
-			configAtoms.push_back(*n);
+		else if (string::npos == buffer.find('=')) { // if '=' is not found in string buffer
+			cout << "found an atom line: " << buffer << endl;
+			istringstream stream(buffer);
+			while (stream) {
+				int tempType, tempID;       // intermediary variables for extracting data from string
+				double tempX, tempY, tempZ; //
+				stream >> tempX >> tempY >> tempZ >> tempID >> tempType;
+				atom *a = new atom(tempX, tempY, tempZ, tempID, tempType);
+				configAtoms.push_back(*a);
+				string leftover;
+				stream >> leftover; // any unexpected string after the config variables
+				cerr << "\"" << leftover << "\" at the end of the atom line. Revise config file" << endl;
+			}
 		}
 		else {
-			key = buffer.substr(0, buffer.find('='));
-			value = buffer.erase(0, buffer.find('=') + 1);
+			key = buffer.substr(0, buffer.find('=')); // "key" will be from beginning of string to '='
+			value = buffer.erase(0, buffer.find('=') + 1); // "value" will be everything after, so erase '=' and before
 			configMap[key] = value;
 		}
 	}
@@ -74,6 +76,7 @@ n->Za >> n->IDb >> n->Xb >> n->Yb >> n->Zb >> n->IDc >> n->Xc >> n->Yc >> n->Zc 
 	istringstream(configMap["volume_relax_time"]) >> relaxTime;
 	istringstream(configMap["atoms_fixed"]) >> atomFixed;
 
+/*
 	cout << "basename is " << basename << endl;
 	cout << "eOutput is " << eOutput << endl;
 	cout << "errOutput is " << errOutput << endl;
@@ -96,6 +99,10 @@ n->Za >> n->IDb >> n->Xb >> n->Yb >> n->Zb >> n->IDc >> n->Xc >> n->Yc >> n->Zc 
 	cout << "relaxVolume is " << relaxVolume << endl;
 	cout << "relaxTime is " << relaxTime << endl;
 	cout << "atomFixed is " << atomFixed << endl;
+*/
+	for (atom& a : configAtoms) {
+		cout << a.getID() << " " << a.getType() << ": " << a.getX() << ", " << a.getY() << ", " << a.getZ() << endl;
+	}
 
 	return 0;
 }

@@ -13,6 +13,9 @@ class point {
 		point(const int x, const int y, const int z);
 		double distanceTo(const point &p) const;
 		double distanceTo(const int x, const int y, const int z) const;
+		void setX(double x);
+		void setY(double y);
+		void setZ(double z);
 		double getX() const;
 		double getY() const;
 		double getZ() const;
@@ -23,7 +26,11 @@ class atom: public point {
 		int id, type;
 	public:
 		atom();
-		atom(const int x, const int y, const int z, const int id, const int el);
+		atom(const double x, const double y, const double z, const int id, const int el);
+		void setID(int id);
+		void setType(int type);
+		int getID();
+		int getType();
 };
 
 #endif
