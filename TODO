@@ -1,3 +1,4 @@
 Change atom.type to String
 Override extraction operator in atom.cpp to read in a single line from config file
 Fix empty string at the end of stream
+Implement bondAtoms
