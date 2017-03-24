@@ -15,6 +15,7 @@ class model {
 		model(); // (default) constructor
 		double getRandomDecimal();
 		bool makeDefectedSystem();
+		bool bondAtoms();
 };
 
 #endif

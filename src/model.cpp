@@ -64,3 +64,76 @@ bool model::makeDefectedSystem() {
 
 	return 0;
 }
+
+/* Bonds the atoms
+Returns true if the bonding succeeded
+*/
+bool model::bondAtoms()
+{
+	int n = atoms.size();
+/*
+	// this avoids dead ends where atoms in less dense areas are not bonded
+	//initAtomsInShell();
+	//sort(atoms.begin(), atoms.end(), isMoreDesparate);
+
+	// select an atom
+	for(int i = 0; i < n; i++)
+	{
+		// while it doesn't have the needed bonds, bond
+		while(atoms[i].bonds.size() < NUM_BONDS[atoms[i].type]) 
+		{
+			size_t closestSubscript = i;
+			double closestDistance = INT_MAX;
+			Point closestPoint = atoms[i].coordinates;
+
+			// all elements 0-i already have 4 bonds and can be ignored
+			for(size_t potentialPartnerSubs = i+1; 
+				potentialPartnerSubs < n; 
+				potentialPartnerSubs++)
+			{
+
+				// a partner is valid if
+				// 1. this partner does not have 4 bonds
+				// 2. this partner is not already bonded to our current atom
+				if(atoms[potentialPartnerSubs].bonds.size() < NUM_BONDS[atoms[potentialPartnerSubs].type] &&
+					find(atoms[i].bonds.begin(), atoms[i].bonds.end(), 
+					Partner(Point(0,0,0), atoms[potentialPartnerSubs].id)) == atoms[i].bonds.end())
+				{
+					// find closest version of this potential partner
+					Point p = closestPointWithPBC(atoms[i].coordinates, atoms[potentialPartnerSubs].coordinates);
+					double tempDistance = p.distanceTo(atoms[i].coordinates);
+
+					// if it is the closest possible partner, take note
+					if(tempDistance < closestDistance)
+					{
+						closestDistance = tempDistance;
+						closestSubscript = potentialPartnerSubs;
+						closestPoint = p;
+					}
+				}
+			}
+
+			// Theoretically, this should not happen
+			if(closestSubscript == i)
+				return false;
+
+			// adjust bonds
+			atoms[i].bonds.push_back(Partner(closestPoint, atoms[closestSubscript].id, closestDistance));
+
+			// this takes care of a periodic boundary conditions problem
+			Vector displacement(closestPoint.x - atoms[i].coordinates.x,
+				closestPoint.y - atoms[i].coordinates.y,
+				closestPoint.z - atoms[i].coordinates.z);
+
+			atoms[closestSubscript].bonds.push_back(Partner(Point(atoms[closestSubscript].coordinates.x - displacement.x,
+				atoms[closestSubscript].coordinates.y - displacement.y,
+				atoms[closestSubscript].coordinates.z - displacement.z),
+				atoms[i].id, closestDistance));
+		}
+	}
+
+	// resorts the atoms by ID so that atom #n will be at index n-1 in the array
+	sort(atoms.begin(), atoms.end(), hasSmallerID);
+*/
+	return true;
+}
