@@ -24,6 +24,7 @@ class point {
 class atom: public point {
 	private:
 		int id, type;
+		atom *nn;
 	public:
 		atom();
 		atom(const double x, const double y, const double z, const int id, const int el);
@@ -31,6 +32,7 @@ class atom: public point {
 		void setType(int type);
 		int getID();
 		int getType();
+		void setNN(atom* nn);
 };
 
 #endif

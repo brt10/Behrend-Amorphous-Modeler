@@ -1,6 +1,9 @@
 src/*.o
 src/bam*
 src/test1*
+src/*~
+src/#*#
+bam2_4
 bin/*
 !bin/test1.input
 !bin/test216.input

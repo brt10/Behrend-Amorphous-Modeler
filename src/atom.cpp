@@ -68,3 +68,7 @@ int atom::getID() {
 int atom::getType() {
 	return this->type;
 }
+
+void atom::setNN(atom* nn) {
+    this->nn = nn;
+}
