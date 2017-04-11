@@ -27,9 +27,9 @@ int main(int argc, char* argv[]) {
 	ifstream configFile(argv[1]);
 
 	string key, value, buffer;
-	map<string, string> configMap; // dictionary for configuration files
-	map<string, tuple<int, double> > uAtoms;
-	vector<atom> configAtoms;
+	map<string, string> configMap; // dictionary for configuration file options
+	map<string, tuple<int, double> > uAtoms; // u(nspecified)Atoms
+	vector<atom> configAtoms; // config(uration file)Atoms
 	configAtoms.reserve(100);
 	while (getline(configFile, buffer) && !buffer.empty()) {
 		if ('#' == buffer[0]) // if the first character of the buffer is a #, ignore it
@@ -38,7 +38,8 @@ int main(int argc, char* argv[]) {
 			cout << "found an atom line: " << buffer << endl;
 			istringstream stream(buffer);
 			while (stream) {
-				int tempType, tempID;       // intermediary variables for extracting data from string
+				int tempID;       // intermediary variables for extracting data from string
+				string tempType;
 				double tempX, tempY, tempZ; //
 				stream >> tempX >> tempY >> tempZ >> tempID >> tempType;
 				atom *a = new atom(tempX, tempY, tempZ, tempID, tempType);
@@ -56,8 +57,8 @@ int main(int argc, char* argv[]) {
 			    string name;
 			    int quantity;
 			    double probability;
-			    istringstream(value) >> name >> quantity >> probability;
-			    uAtoms[name] = tuple<int, double>(quantity, probability);
+			    istringstream(value) >> name >> quantity >> probability; // read name, quantity and prob from atom= line
+			    uAtoms[name] = tuple<int, double>(quantity, probability); // store the atom= line in the uAtoms map
 			} else
 			    configMap[key] = value;
 		}
@@ -70,12 +71,6 @@ int main(int argc, char* argv[]) {
 	istringstream(configMap["bond"]) >> boolalpha >> bOutput;
 	istringstream(configMap["vasp"]) >> boolalpha >> vOutput;
 	istringstream(configMap["nn"]) >> boolalpha >> nnOutput;
-	/*	istringstream(configMap["atom_type_1"]) >> atomTypeOne;
-	istringstream(configMap["atom_type_2"]) >> atomTypeTwo;
-	istringstream(configMap["atom_number_1"]) >> atomQuantityOne;
-	istringstream(configMap["atom_number_2"]) >> atomQuantityTwo;
-	istringstream(configMap["bond_switch_prob1"]) >> bondSwitchProbOne;
-	istringstream(configMap["bond_switch_prob2"]) >> bondSwitchProbTwo;*/
 	istringstream(configMap["atom_switch_code"]) >> boolalpha >> switchCode;
 	istringstream(configMap["atoms_to_switch"]) >> atomToSwitchOne >> atomToSwitchTwo;
 	istringstream(configMap["atoms_switch_prob"]) >> atomSwitchProb;
@@ -86,6 +81,7 @@ int main(int argc, char* argv[]) {
 	istringstream(configMap["volume_relax_time"]) >> relaxTime;
 	istringstream(configMap["atoms_fixed"]) >> atomFixed;
 
+	cout << "Configuration file options: " << endl;
 	cout << "basename is " << basename << endl;
 	cout << "eOutput is " << eOutput << endl;
 	cout << "errOutput is " << errOutput << endl;
@@ -93,16 +89,7 @@ int main(int argc, char* argv[]) {
 	cout << "bOutput is " << bOutput << endl;
 	cout << "vOutput is " << vOutput << endl;
 	cout << "nnOutput is " << nnOutput << endl;
-	for(const auto &m : uAtoms) {
-	    cout << m.first << " " << get<0>(m.second) << " " << get<1>(m.second) << endl;
-	}
-	/*cout << "atomTypeOne is " << atomTypeOne << endl;
-	cout << "atomTypeTwo is " << atomTypeTwo << endl;
-	cout << "atomQuantityOne is " << atomQuantityOne << endl;
-	cout << "atomQuantityTwo is " << atomQuantityTwo << endl;
-	cout << "bondSwitchProbOne is " << bondSwitchProbOne << endl;
-	cout << "bondSwitchProbTwo is " << bondSwitchProbTwo << endl;*/
-	cout << "switchCode is " << switchCode << endl;
+       	cout << "switchCode is " << switchCode << endl;
 	cout << "atomToSwitchOne and Two are " << atomToSwitchOne << " " << atomToSwitchTwo << endl;
 	cout << "atomSwitchProb is " << atomSwitchProb << endl;
 	cout << "temp is " << temp << endl;
@@ -111,7 +98,13 @@ int main(int argc, char* argv[]) {
 	cout << "relaxVolume is " << relaxVolume << endl;
 	cout << "relaxTime is " << relaxTime << endl;
 	cout << "atomFixed is " << atomFixed << endl;
-	
+
+	cout << endl << "uAtoms: " << endl;
+	for(const auto &m : uAtoms) {
+	    cout << m.first << " " << get<0>(m.second) << " " << get<1>(m.second) << endl;
+	}
+
+	cout << endl << "configAtoms: " << endl;
 	for (atom& a : configAtoms) {
 		cout << a.getID() << " " << a.getType() << ": " << a.getX() << ", " << a.getY() << ", " << a.getZ() << endl;
 	}

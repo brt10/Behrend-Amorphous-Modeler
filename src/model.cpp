@@ -5,6 +5,9 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
+#include <tuple>
+#include <map>
 
 using namespace std;
 
@@ -14,7 +17,7 @@ double model::getRandomDecimal() {
 }
 
 // Constructor for initializing atoms with configAtoms first, then random atoms based off of atom_type_* and atom_number_* configuration options
-model::model(vector<int> uAtoms, vector<atom> configAtoms, string efn) {
+model::model(map<string, tuple<int, double> > uAtoms, vector<atom> configAtoms, string efn) {
     string errorFileName = efn + ".error"; // output_file_prefix.error where output_file_prefix is from the config file
     ofstream fout;
     fout.open(errorFileName.c_str());
@@ -25,8 +28,8 @@ model::model(vector<int> uAtoms, vector<atom> configAtoms, string efn) {
     this->atoms = configAtoms; // copy configuration atoms into the model first
     int oSize = (int)atoms.size(); // store original size of atoms in case a pseudo-clear() is necessary
     int aTotal = oSize; // Start with size of atoms, in case configAtoms was non-empty
-    for(int i = 0; i < (int)uAtoms.size(); i++) // Get total number of atoms
-        aTotal += uAtoms[i];
+    for(const auto &a : uAtoms) // Get total number of atoms
+        aTotal += get<0>(a.second); // aTotal += quantity of each atom
     
     setBoxSize(2.715 * pow(aTotal, 1/3.0)); // sets a dimension to 2.715 * (total number of atoms)^(1/3)
     
@@ -44,10 +47,10 @@ model::model(vector<int> uAtoms, vector<atom> configAtoms, string efn) {
 	
 	atoms.resize(oSize); // clears randomly generated atoms
 	id = 0;
-	for(int j = 0; j < (int)uAtoms.size(); j++) { // iterate through each type of atom
-	    for(int i = 0; i < uAtoms[j]; i++) { // iterate through each atom of type j
+	for(const auto &a : uAtoms) { // iterate through each type of atom
+	    for(int i = 0; i < get<0>(a.second); i++) { // iterate through each atom of type j
 		// add an atom with type "j" and unique id "id" to random coordinates in the box
-		atoms.push_back(atom(getRandomDecimal()*boxSize[0], getRandomDecimal()*boxSize[1], getRandomDecimal()*boxSize[2], id, j));
+		atoms.push_back(atom(getRandomDecimal()*boxSize[0], getRandomDecimal()*boxSize[1], getRandomDecimal()*boxSize[2], id, a.first));
 		id++;
 	    }
 	}

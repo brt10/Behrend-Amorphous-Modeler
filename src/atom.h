@@ -2,6 +2,7 @@
 #define ATOM_H
 
 #include <math.h>
+#include <string>
 
 using namespace std;
 
@@ -23,15 +24,16 @@ class point {
 
 class atom: public point {
 	private:
-		int id, type;
+		int id;
+		string type;
 		atom *nn;
 	public:
 		atom();
-		atom(const double x, const double y, const double z, const int id, const int el);
+		atom(const double x, const double y, const double z, const int id, const string type);
 		void setID(int id);
-		void setType(int type);
+		void setType(string type);
 		int getID();
-		int getType();
+		string getType();
 		void setNN(atom* nn);
 };
 

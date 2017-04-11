@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string>
 #include "atom.h"
 
 using namespace std;
@@ -43,21 +44,21 @@ double point::getZ() const {
 	return z;
 }
 
-atom::atom() : atom(0, 0, 0, 0, 0) {}
+atom::atom() : atom(0, 0, 0, 0, "") {}
 
-atom::atom(const double x = 0, const double y = 0, const double z = 0, const int id = 0, const int el = 0) {
+atom::atom(const double x = 0, const double y = 0, const double z = 0, const int id = 0, const string type = "") {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 	this->id = id;
-	this->type = el;
+	this->type = type;
 }
 
 void atom::setID(int id) {
 	this->id = id;
 }
 
-void atom::setType(int type) {
+void atom::setType(string type) {
 	this->type = type;
 }
 
@@ -65,7 +66,7 @@ int atom::getID() {
 	return this->id;
 }
 
-int atom::getType() {
+string atom::getType() {
 	return this->type;
 }
 
