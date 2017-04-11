@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <tuple>
 #include <vector>
 
 using namespace std;
@@ -19,14 +20,15 @@ int main(int argc, char* argv[]) {
 	bool eOutput, errOutput, mOutput, bOutput, vOutput, nnOutput; // Options for choosing which output files to generate
 	bool switchCode, relaxVolume;
 	string atomTypeOne, atomTypeTwo, atomFixed, atomToSwitchOne, atomToSwitchTwo; // strings for atoms, could be 2 char arrays
-	int atomQuantityOne, atomQuantityTwo, numberSwitches, relaxTime;
-	double bondSwitchProbOne, bondSwitchProbTwo, atomSwitchProb, temp, latticeConsts[3];
+	int numberSwitches, relaxTime;
+	double atomSwitchProb, temp, latticeConsts[3];
 	string basename; // name of output files
 
 	ifstream configFile(argv[1]);
 
 	string key, value, buffer;
 	map<string, string> configMap; // dictionary for configuration files
+	map<string, tuple<int, double> > uAtoms;
 	vector<atom> configAtoms;
 	configAtoms.reserve(100);
 	while (getline(configFile, buffer) && !buffer.empty()) {
@@ -43,13 +45,21 @@ int main(int argc, char* argv[]) {
 				configAtoms.push_back(*a);
 				string leftover;
 				stream >> leftover; // any unexpected string after the config variables
-				cerr << "\"" << leftover << "\" at the end of the atom line. Revise config file" << endl;
+				if(!leftover.empty())
+				    cerr << "\"" << leftover << "\" at the end of the atom line. Revise config file" << endl;
 			}
 		}
 		else {
 			key = buffer.substr(0, buffer.find('=')); // "key" will be from beginning of string to '='
 			value = buffer.erase(0, buffer.find('=') + 1); // "value" will be everything after, so erase '=' and before
-			configMap[key] = value;
+			if("atom" == key) {
+			    string name;
+			    int quantity;
+			    double probability;
+			    istringstream(value) >> name >> quantity >> probability;
+			    uAtoms[name] = tuple<int, double>(quantity, probability);
+			} else
+			    configMap[key] = value;
 		}
 	}
 
@@ -60,12 +70,12 @@ int main(int argc, char* argv[]) {
 	istringstream(configMap["bond"]) >> boolalpha >> bOutput;
 	istringstream(configMap["vasp"]) >> boolalpha >> vOutput;
 	istringstream(configMap["nn"]) >> boolalpha >> nnOutput;
-	istringstream(configMap["atom_type_1"]) >> atomTypeOne;
+	/*	istringstream(configMap["atom_type_1"]) >> atomTypeOne;
 	istringstream(configMap["atom_type_2"]) >> atomTypeTwo;
 	istringstream(configMap["atom_number_1"]) >> atomQuantityOne;
 	istringstream(configMap["atom_number_2"]) >> atomQuantityTwo;
 	istringstream(configMap["bond_switch_prob1"]) >> bondSwitchProbOne;
-	istringstream(configMap["bond_switch_prob2"]) >> bondSwitchProbTwo;
+	istringstream(configMap["bond_switch_prob2"]) >> bondSwitchProbTwo;*/
 	istringstream(configMap["atom_switch_code"]) >> boolalpha >> switchCode;
 	istringstream(configMap["atoms_to_switch"]) >> atomToSwitchOne >> atomToSwitchTwo;
 	istringstream(configMap["atoms_switch_prob"]) >> atomSwitchProb;
@@ -76,7 +86,6 @@ int main(int argc, char* argv[]) {
 	istringstream(configMap["volume_relax_time"]) >> relaxTime;
 	istringstream(configMap["atoms_fixed"]) >> atomFixed;
 
-/*
 	cout << "basename is " << basename << endl;
 	cout << "eOutput is " << eOutput << endl;
 	cout << "errOutput is " << errOutput << endl;
@@ -84,12 +93,15 @@ int main(int argc, char* argv[]) {
 	cout << "bOutput is " << bOutput << endl;
 	cout << "vOutput is " << vOutput << endl;
 	cout << "nnOutput is " << nnOutput << endl;
-	cout << "atomTypeOne is " << atomTypeOne << endl;
+	for(const auto &m : uAtoms) {
+	    cout << m.first << " " << get<0>(m.second) << " " << get<1>(m.second) << endl;
+	}
+	/*cout << "atomTypeOne is " << atomTypeOne << endl;
 	cout << "atomTypeTwo is " << atomTypeTwo << endl;
 	cout << "atomQuantityOne is " << atomQuantityOne << endl;
 	cout << "atomQuantityTwo is " << atomQuantityTwo << endl;
 	cout << "bondSwitchProbOne is " << bondSwitchProbOne << endl;
-	cout << "bondSwitchProbTwo is " << bondSwitchProbTwo << endl;
+	cout << "bondSwitchProbTwo is " << bondSwitchProbTwo << endl;*/
 	cout << "switchCode is " << switchCode << endl;
 	cout << "atomToSwitchOne and Two are " << atomToSwitchOne << " " << atomToSwitchTwo << endl;
 	cout << "atomSwitchProb is " << atomSwitchProb << endl;
@@ -99,7 +111,7 @@ int main(int argc, char* argv[]) {
 	cout << "relaxVolume is " << relaxVolume << endl;
 	cout << "relaxTime is " << relaxTime << endl;
 	cout << "atomFixed is " << atomFixed << endl;
-*/
+	
 	for (atom& a : configAtoms) {
 		cout << a.getID() << " " << a.getType() << ": " << a.getX() << ", " << a.getY() << ", " << a.getZ() << endl;
 	}
