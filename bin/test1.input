@@ -1,24 +1,20 @@
-output_file_prefix=	string		Default= input file prefix	description= prefix for all ouput file names
-energy=			true or false	Default= true			description= file with list of model energy for each step 
-error=			true or false	Defualt= true			description= error messages 
-output=			true or false	Default= true			description= file format with input file format for final model 
-bond=	      		true or false	Default= true			description= file with atom and its number of bonds listed
-vasp=       		true or false	Default= true			description= file with final model in vasp format
-nn=		      	true or false	Default= true			description= file with atom and its neighbors listed	
-atom_type_1=		string		Default= none			description= one or two letter character corresponding to atom from periodic table  	example= Si 
-atom_type_2=		same as above
-atom_number_1=		integer		Defualt= none			description= number of atoms of type one
-atom_number_2= 		same as above
-bond_switch_prob1=	double		Default= none		      	description= probability atom1 chosen for bond switch; value must be between 0 and 100
-bond_switch_prob2=	same as above
-atom_switch_code=       true or false	Default= false			description= function to switch atom types
-atoms_to_switch=        two strings     Default= none			description= the first atom is switched for the second  example=  Si C 
-atoms_switch_prob=	double		Default= none			description= the probability that bond change is used instead of bond switch; must be between 0 and 100
-temperature=		double	      	Default= none			description= temperature in KT units of eV
-number_switches=  	integer		Defualt= 0			description= number of switching events created
-lattice_constants=	double		Default= 0 0 0			description= three reals space seperated for x,y,z lattice lengths in Angstroms; 0 0 0 create lattice based on number and size of atoms
-relax_volume=		true or false	Default= true		      	description= relax volume of model
-volume_relax_time=	integer		Default= 0	      		description= number of accepted switches before volume relaxed
-atoms_fixed=		string		Defualt= none			description= atom name to fix the position of atoms
-lattice_constants=	double		Default= 0 0 0			description= three reals space seperated for x,y,z lattice lengths in Angstroms; 0 0 0 create lattice based on number and size of atoms
+output_file_prefix=	output
+energy=			true
+error=			true
+output=			true
+bond=	      		true
+vasp=       		true
+nn=		      	true
+atom=			He 4 0.700
+atom=			Ni 9 0.271
+atom_switch_code=       true
+atoms_to_switch=        He Ni
+atoms_switch_prob=	71
+temperature=		200
+number_switches=  	100
+lattice_constants=	1.00 2.00 4.00
+relax_volume=		true
+volume_relax_time=	50
+atoms_fixed=		Ni
+lattice_constants=	1.5 4.5 6.7
 2.1 2.2 2.3 2 42
