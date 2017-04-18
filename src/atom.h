@@ -41,6 +41,7 @@ class atom: public point {
 		int getBonds();
 		void bond(atom b);
 		bool operator==(atom b);
+		string atomString();
 };
 
 #endif

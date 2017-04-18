@@ -109,5 +109,7 @@ int main(int argc, char* argv[]) {
 		cout << a.getID() << " " << a.getType() << ": " << a.getX() << ", " << a.getY() << ", " << a.getZ() << endl;
 	}
 
+	model model(uAtoms, configAtoms, basename);
+	
 	return 0;
 }

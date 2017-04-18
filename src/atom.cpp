@@ -97,3 +97,8 @@ void atom::bond(atom b) {
 	b.bond(*this); // recursive call to have the other atom push_back the same bond
     }
 }
+
+string atom::atomString() {
+    string s = string("Atom ") + string(this->id) + string(": ") + string(this->type) + string(" (") + string(this->x) + string(", ") + string(this->y) + string(", ") + string(this->z) + string(")");
+    return s;
+}
