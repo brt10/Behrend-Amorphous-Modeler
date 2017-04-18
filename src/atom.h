@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -26,7 +27,8 @@ class atom: public point {
 	private:
 		int id;
 		string type;
-		atom *nn;
+		vector<atom> nn;
+		vector<atom> bonds;
 	public:
 		atom();
 		atom(const double x, const double y, const double z, const int id, const string type);
@@ -34,7 +36,11 @@ class atom: public point {
 		void setType(string type);
 		int getID();
 		string getType();
-		void setNN(atom* nn);
+		void addNN(atom nn);
+		vector<atom> getNN();
+		int getBonds();
+		void bond(atom b);
+		bool operator==(atom b);
 };
 
 #endif

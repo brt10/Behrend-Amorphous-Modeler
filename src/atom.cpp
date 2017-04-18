@@ -1,5 +1,6 @@
 #include <math.h>
 #include <string>
+#include <algorithm> // find
 #include "atom.h"
 
 using namespace std;
@@ -54,6 +55,12 @@ atom::atom(const double x = 0, const double y = 0, const double z = 0, const int
 	this->type = type;
 }
 
+bool atom::operator==(atom b) {
+    if(this->x == b.getX() && this->y == b.getY() && this->z == b.getZ() && this->type == b.getType())
+	return true;
+    return false;
+}
+
 void atom::setID(int id) {
 	this->id = id;
 }
@@ -70,6 +77,23 @@ string atom::getType() {
 	return this->type;
 }
 
-void atom::setNN(atom* nn) {
-    this->nn = nn;
+void atom::addNN(atom nn) {
+    this->nn.push_back(nn);
+}
+
+vector<atom> atom::getNN() {
+    return nn;
+}
+
+int atom::getBonds() {
+    return (int)bonds.size();	   
+}
+
+void atom::bond(atom b) {
+    vector<atom>::iterator a;
+    a = find(bonds.begin(), bonds.end(), b);
+    if(a != bonds.end()) { // if b isn't found in a's bonds, add it
+	bonds.push_back(b);
+	b.bond(*this); // recursive call to have the other atom push_back the same bond
+    }
 }

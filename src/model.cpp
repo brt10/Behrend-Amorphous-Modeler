@@ -61,18 +61,16 @@ model::model(map<string, tuple<int, double> > uAtoms, vector<atom> configAtoms, 
 	    numFail++;
     }
 
-    for(int i = 0; i < (int)atoms.size(); i++) {
-	atom *nn = NULL;
-	double lowest = getBoxSize(); // arbitrary high number
-	for(int j = 0; j < (int)atoms.size(); j++) {
-	    if(i != j) {
-		if(atoms[i].distanceTo(atoms[j]) < lowest) {
-		    lowest = atoms[i].distanceTo(atoms[j]);
-		    nn = &atoms[j];
-		}
-	    }
+    for(atom a : atoms) { // iterate through all atoms in atoms
+	map<double, atom> sortedAtoms; // map to sort atoms by distance from a
+	for(atom b : atoms) { // iterate through all atoms again and add to sortedAtoms
+	    sortedAtoms[a.distanceTo(b)] = b;
 	}
-	atoms[i].setNN(nn);
+	map<double, atom>::iterator c = sortedAtoms.begin()++; // the first distance will always be 0 (distance to itself) so start at begin()++
+	for(int i = 0; i < 4; i++) { // iterate through the first 4 elements for the closest 4 atoms
+	    a.addNN(c->second); // add them to nn
+	    c++; // iterate sortedAtoms iterator
+	}
     }
     
     /*
@@ -82,11 +80,20 @@ model::model(map<string, tuple<int, double> > uAtoms, vector<atom> configAtoms, 
     fout.close();	 
 }
 
+bool model::bondAtoms() {
+    for(atom a : atoms) { // iterate through all atoms in atoms
+	for(atom n : a.getNN()) { // iterate through all nearest neighbors of atom a
+	    if(a.getBonds() < 4 && n.getBonds() < 4) // if both atoms need more bonds, then bond
+		a.bond(n);
+	}
+    }
+
+    return true;
+}
+
 /* Bonds the atoms
 Returns true if the bonding succeeded
-*/
 bool model::bondAtoms() {
-    /*
     int n = (int)atoms.size(); // get number of total atoms in the model
     
     // this avoids dead ends where atoms in less dense areas are not bonded
@@ -151,9 +158,9 @@ bool model::bondAtoms() {
     
     // resorts the atoms by ID so that atom #n will be at index n-1 in the array
     sort(atoms.begin(), atoms.end(), hasSmallerID);
-    */
-    return true;
+    //    return true;
 }
+*/
 
 double model::getBoxSize() {
     return boxSize[0];
