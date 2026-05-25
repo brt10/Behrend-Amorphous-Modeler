@@ -1,0 +1,18 @@
+CXX = g++
+CXXFLAGS = -O3
+OMPFLAGS = -fopenmp -DOMP
+
+# default target
+all: serial parallel
+
+# serial executable
+serial:
+	$(CXX) $(CXXFLAGS) -Wno-pragmas Model.cpp main.cpp -o bam_serial.x
+
+# parallel executable (OpenMP)
+parallel:
+	$(CXX) $(CXXFLAGS) $(OMPFLAGS) Model.cpp main.cpp -o bam_parallel.x
+
+# clean target
+clean:
+	rm -f bam_serial.x bam_parallel.x

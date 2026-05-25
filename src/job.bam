@@ -1,0 +1,62 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1    
+#SBATCH --mem=10GB
+#SBATCH --time=26:00:00
+#SBATCH --account=read_crch_m1brt10
+#SBATCH --partition=standard 
+
+#make sure junk does not get written to my home folder
+echo "Job Info..."
+echo "Job ID:        $SLURM_JOB_ID"
+echo "Num Nodes:     $SLURM_JOB_NUM_NODES"
+echo "Proc Per Node: $SLURM_NTASKS_PER_NODE"
+# get number of cpus
+NP=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+echo "Total Procs:   $NP"
+echo " "
+
+echo "Loading Modules..."
+module purge
+module load intel/2021.4.0
+module load impi/2021.4.0
+module load mkl/2021.4.0
+module list
+echo " "
+echo "Starting run at:"
+date
+
+start_time=$(date +%s)
+
+mkdir parallel
+cd parallel
+cp ../run1.init .
+
+../bam_parallel.x run1.init > run1.para_out
+cd ..
+
+end_time=$(date +%s)
+
+echo "Finished run at:"
+date
+
+elapsed=$((end_time - start_time))
+echo "Elapsed time (seconds): $elapsed"
+
+start_time=$(date +%s)
+mkdir serial
+cd serial
+cp ../run1.init .
+../bam_serial.x run1.init > run1.ser_out
+cd ..
+end_time=$(date +%s)
+
+echo "Finished run at:"
+date
+
+elapsed=$((end_time - start_time))
+echo "Elapsed time (seconds): $elapsed"
+
+
+
+
