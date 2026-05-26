@@ -8,7 +8,7 @@ Last modified by BRT in 2026 using co-pilot
 Stores a set of atoms
 Contains functions for amorphizing the atoms
 */
-#include "omp.h"
+//#include "mpi.h"
 #include "Model.h"
 //#include "pthread.h"
 //#include "Python.h"
@@ -368,8 +368,7 @@ void Model::writeInitialForces(string file_name)
         vector<forcePrint> output(atoms.size());
 
 	// reset all forces
- 	#pragma omp parallel for	
-	for(int i = 0; i < n; i++)
+	for(i = 0; i < n; i++)
 	{
 		if((SHELL_ONLY && atoms[i].shellNumber > CLUSTER_MAX_SHELL))	
 			//this line was changed as a test
@@ -1128,8 +1127,8 @@ void Model::performAnnealing(const int numSwaps, const int numVSwaps, string fil
 			keepInBox();
 		}
 
+		double kT_local = kT * pow(1- (double)i/(double)numSwaps, 4);
 		double finEnergy = getEnergy();
-		double kT_local = kT*finEnergy* pow(1- (double)i/(double)numSwaps, 4)/minEnergy;
 		double rand = getRandomDecimal();
                 double metProb = getMetropolisProb(initEnergy, finEnergy, kT_local);
 		string font = "<font color=blue>";
